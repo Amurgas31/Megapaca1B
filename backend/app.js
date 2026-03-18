@@ -7,6 +7,6 @@ const app = express();
 //IMPORTANTE: Que acepte los json desde postman
 app.use(express.json());
 
-app.use("/api/products", productRoutes)
+app.use("/api/products", productRoutes);
 
 export default app;

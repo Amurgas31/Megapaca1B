@@ -10,7 +10,7 @@ router.route("/")
 .get(productsController.getProducts)
 .post(productsController.insertProducts);
 
-router.route("/:id")
+router.route("/:id") //Pide el id para saber que se va a actualizar o eliminar
 .put(productsController.updateProducts)
 .delete(productsController.deleteProducts);
 
