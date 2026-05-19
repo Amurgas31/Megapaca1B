@@ -1,4 +1,8 @@
 import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+
+// Routes
 import productRoutes from "./src/routes/products.js";
 import branchesRoutes from "./src/routes/branches.js";
 import employeeRoutes from "./src/routes/employees.js";
@@ -12,8 +16,7 @@ import loginCustomerRoutes from "./src/routes/login.js";
 import logoutRoutes from "./src/routes/logout.js";
 import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js";
 import providerRoutes from "./src/routes/provider.js";
-import cookieParser from "cookie-parser";
-import cors from "cors";
+import limiter from "./src/middlewares/limiter.js";
 
 // Creo una constante que guarde Express
 const app = express();
@@ -25,6 +28,8 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use(limiter);
 
 app.use(cookieParser());
 
