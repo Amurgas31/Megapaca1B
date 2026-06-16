@@ -28,6 +28,8 @@ employeeController.updateEmployee = async (req, res) => {
       password,
       idBranches,
       isVerified,
+      loginAttemps,
+      timeOut,
     } = req.body;
 
     // Validaciones

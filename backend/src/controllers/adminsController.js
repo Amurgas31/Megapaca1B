@@ -18,7 +18,8 @@ adminController.getAdmin = async (req, res) => {
 adminController.updateAdmin = async (req, res) => {
   try {
     // 1- Solicitamos los nuevos datos
-    let { name, email, password, isVerified } = req.body;
+    let { name, email, password, isVerified, loginAttemps,
+        timeOut } = req.body;
 
     // Validaciones
     name = name?.trim();
@@ -36,6 +37,8 @@ adminController.updateAdmin = async (req, res) => {
         email,
         password,
         isVerified,
+        loginAttemps,
+        timeOut
       },
       { new: true },
     );
