@@ -35,6 +35,10 @@ import wompiRoutes from "./src/routes/wompi.js";
 import limiter from "./src/middlewares/limiter.js";
 import { validateAuthCookie } from "./src/middlewares/authMiddleware.js";
 
+// Documentación y libreria de Swagger
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./src/utils/planly-6ca-megapaca-1.0-resolved.json" with {type: "json"}
+
 // Creo una constante que guarde Express
 const app = express();
 
@@ -52,6 +56,9 @@ app.use(cookieParser());
 
 //IMPORTANTE: Que acepte los json desde postman
 app.use(express.json());
+
+//Documentación
+app.use("/apiDocs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // Endpoints de CRUDS normales
 app.use("/api/products", productRoutes);
