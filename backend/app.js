@@ -37,7 +37,7 @@ import { validateAuthCookie } from "./src/middlewares/authMiddleware.js";
 
 // Documentación y libreria de Swagger
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./src/utils/planly-6ca-megapaca-1.0-resolved.json" with {type: "json"}
+import swaggerDocument from "./src/utils/planly-b2d-Megapaca-1.0-resolved.json" with {type: "json"}
 
 // Creo una constante que guarde Express
 const app = express();

@@ -1,0 +1,4285 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MegapacaAPI",
+    "description": "Documentación de la API de Megapaca",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/planly-b2d/Megapaca/1.0",
+      "description": "SwaggerHub API Auto Mocking"
+    }
+  ],
+  "paths": {
+    "/api/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Obtener todos los productos",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de productos obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado (Cookie faltante o inválida)"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Crear un nuevo producto",
+        "description": "Roles permitidos: Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Producto guardado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/products/low-stock": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Obtener productos con stock bajo",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de productos con bajo stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No hay productos con stock bajo"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/products/price-range": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Filtrar productos por rango de precios",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/products_pricerange_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Productos encontrados dentro del rango",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontraron productos en este rango"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/products/count": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Contar total de productos",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Total de productos contados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 42
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/products/search-name": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Buscar productos por nombre",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/products_searchname_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Productos encontrados que coinciden con la búsqueda",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontraron productos"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Obtener producto por ID",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del producto",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Producto no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Actualizar un producto existente",
+        "description": "Roles permitidos: Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del producto a actualizar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Producto actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Eliminar un producto",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del producto a eliminar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto eliminado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_2"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/branches": {
+      "get": {
+        "tags": [
+          "Branches"
+        ],
+        "summary": "Obtener todas las sucursales",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de sucursales obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Branch"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado (Cookie faltante o inválida)"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Branches"
+        ],
+        "summary": "Crear una nueva sucursal",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BranchInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Sucursal guardada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_3"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/branches/{id}": {
+      "put": {
+        "tags": [
+          "Branches"
+        ],
+        "summary": "Actualizar una sucursal existente",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID de la sucursal a actualizar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BranchInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Sucursal actualizada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_4"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Branches"
+        ],
+        "summary": "Eliminar una sucursal",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID de la sucursal a eliminar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucursal eliminada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_5"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/reviews": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Obtener todas las reseñas",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de reseñas obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Review"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado (Cookie faltante o inválida)"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Crear una nueva reseña",
+        "description": "Roles permitidos: Customer",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Reseña guardada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_6"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/reviews/{id}": {
+      "put": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Actualizar una reseña existente",
+        "description": "Roles permitidos: Customer",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID de la reseña a actualizar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Reseña actualizada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_7"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Eliminar una reseña",
+        "description": "Roles permitidos: Customer, Employee, Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Employee, Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID de la reseña a eliminar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reseña eliminada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_8"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/registerCustomer": {
+      "post": {
+        "tags": [
+          "Customers - Auth & Registration"
+        ],
+        "summary": "Registrar un nuevo cliente",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/api_registerCustomer_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Correo de verificación enviado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_9"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El cliente ya existe"
+          },
+          "500": {
+            "description": "Error interno o error enviando el correo"
+          }
+        }
+      }
+    },
+    "/api/registerCustomer/verifyCodeEmail": {
+      "post": {
+        "tags": [
+          "Customers - Auth & Registration"
+        ],
+        "summary": "Verificar código enviado al correo",
+        "parameters": [
+          {
+            "name": "registrationCookie",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/registerCustomer_verifyCodeEmail_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Cliente registrado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_10"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Código inválido"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/api/loginCustomer": {
+      "post": {
+        "tags": [
+          "Customers - Auth & Registration"
+        ],
+        "summary": "Iniciar sesión de cliente",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/api_loginCustomer_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Login exitoso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_11"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Correo inválido o cliente no encontrado"
+          },
+          "401": {
+            "description": "Contraseña incorrecta"
+          },
+          "403": {
+            "description": "Cuenta bloqueada por múltiples intentos fallidos"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/api/recoveryPassword/requestCode": {
+      "post": {
+        "tags": [
+          "Customers - Password Recovery"
+        ],
+        "summary": "Solicitar código de recuperación de contraseña",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/recoveryPassword_requestCode_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Correo enviado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_12"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          },
+          "500": {
+            "description": "Error interno o error enviando el correo"
+          }
+        }
+      }
+    },
+    "/api/recoveryPassword/verifyCode": {
+      "post": {
+        "tags": [
+          "Customers - Password Recovery"
+        ],
+        "summary": "Verificar código de recuperación",
+        "parameters": [
+          {
+            "name": "recoveryCookie",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/recoveryPassword_verifyCode_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Código verificado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_13"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Código inválido"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/api/recoveryPassword/newPassword": {
+      "post": {
+        "tags": [
+          "Customers - Password Recovery"
+        ],
+        "summary": "Establecer nueva contraseña",
+        "parameters": [
+          {
+            "name": "recoveryCookie",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/recoveryPassword_newPassword_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Contraseña actualizada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_14"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Las contraseñas no coinciden o código no verificado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/api/customers": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Obtener todos los clientes",
+        "description": "Roles permitidos: Employee, Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Employee, Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de clientes obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/customers/{id}": {
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Actualizar cliente por ID",
+        "description": "Roles permitidos: Employee, Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Employee, Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del cliente",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Cliente actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_15"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos requeridos faltantes o fecha inválida"
+          },
+          "404": {
+            "description": "Cliente no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Eliminar cliente por ID",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del cliente a eliminar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente eliminado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_16"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cliente no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/registerAdmin": {
+      "post": {
+        "tags": [
+          "Admins - Auth & Registration"
+        ],
+        "summary": "Registrar un nuevo administrador",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/api_registerAdmin_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Correo de verificación enviado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_9"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El administrador ya existe"
+          },
+          "500": {
+            "description": "Error interno o error enviando el correo"
+          }
+        }
+      }
+    },
+    "/api/registerAdmin/verifyCodeEmail": {
+      "post": {
+        "tags": [
+          "Admins - Auth & Registration"
+        ],
+        "summary": "Verificar código de registro enviado al correo",
+        "parameters": [
+          {
+            "name": "registrationCookie",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/registerAdmin_verifyCodeEmail_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Administrador registrado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_17"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Código inválido"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/api/loginAdmin": {
+      "post": {
+        "tags": [
+          "Admins - Auth & Registration"
+        ],
+        "summary": "Iniciar sesión de administrador",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/api_loginAdmin_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Login exitoso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_11"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Correo inválido o administrador no encontrado"
+          },
+          "401": {
+            "description": "Contraseña incorrecta"
+          },
+          "403": {
+            "description": "Cuenta bloqueada por múltiples intentos fallidos"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/api/admins": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Obtener todos los administradores",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de administradores obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Admin"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admins/{id}": {
+      "put": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Actualizar administrador por ID",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del administrador",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Administrador actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_18"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos requeridos faltantes"
+          },
+          "404": {
+            "description": "Administrador no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Eliminar administrador por ID",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del administrador a eliminar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Administrador eliminado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_19"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Administrador no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/providers": {
+      "get": {
+        "tags": [
+          "Providers"
+        ],
+        "summary": "Obtener todos los proveedores",
+        "description": "Roles permitidos: Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de proveedores obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Provider"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Providers"
+        ],
+        "summary": "Crear un nuevo proveedor",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/api_providers_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Proveedor guardado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_20"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/providers/{id}": {
+      "put": {
+        "tags": [
+          "Providers"
+        ],
+        "summary": "Actualizar un proveedor existente",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del proveedor a actualizar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/providers_id_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Proveedor actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_21"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Providers"
+        ],
+        "summary": "Eliminar un proveedor",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del proveedor a eliminar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proveedor eliminado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_22"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/cart": {
+      "get": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Obtener todos los carritos",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de carritos obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Cart"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Crear un nuevo carrito",
+        "description": "Roles permitidos: Customer",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Carrito creado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_23"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/cart/{id}": {
+      "get": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Obtener carrito por ID",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del carrito",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrito encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cart"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "Carrito no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Actualizar un carrito existente",
+        "description": "Roles permitidos: Customer",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del carrito a actualizar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Carrito actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_24"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "Carrito no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Eliminar un carrito",
+        "description": "Roles permitidos: Customer, Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del carrito a eliminar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrito eliminado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_25"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "Carrito no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/registerEmployee": {
+      "post": {
+        "tags": [
+          "Employees - Auth & Registration"
+        ],
+        "summary": "Registrar un nuevo empleado",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/api_registerEmployee_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Correo de verificación enviado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_9"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El empleado ya existe"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno o error enviando el correo"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/registerEmployee/verifyCodeEmail": {
+      "post": {
+        "tags": [
+          "Employees - Auth & Registration"
+        ],
+        "summary": "Verificar código de registro enviado al correo",
+        "parameters": [
+          {
+            "name": "registrationCookie",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/registerEmployee_verifyCodeEmail_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Empleado registrado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_26"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Código inválido"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/api/loginEmployee": {
+      "post": {
+        "tags": [
+          "Employees - Auth & Registration"
+        ],
+        "summary": "Iniciar sesión de empleado",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/api_loginEmployee_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Login exitoso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_11"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Correo inválido o empleado no encontrado"
+          },
+          "401": {
+            "description": "Contraseña incorrecta"
+          },
+          "403": {
+            "description": "Cuenta bloqueada por múltiples intentos fallidos"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/api/employees": {
+      "get": {
+        "tags": [
+          "Employees"
+        ],
+        "summary": "Obtener todos los empleados",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de empleados obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Employee"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/employees/{id}": {
+      "put": {
+        "tags": [
+          "Employees"
+        ],
+        "summary": "Actualizar empleado por ID",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del empleado",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Empleado actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_27"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos requeridos faltantes"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "Empleado no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Employees"
+        ],
+        "summary": "Eliminar empleado por ID",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del empleado a eliminar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Empleado eliminado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_28"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "Empleado no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/deliveryDrivers": {
+      "get": {
+        "tags": [
+          "Delivery Drivers"
+        ],
+        "summary": "Obtener todos los repartidores",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de repartidores obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryDriver"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Delivery Drivers"
+        ],
+        "summary": "Crear un nuevo repartidor",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/api_deliveryDrivers_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Repartidor guardado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_29"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/deliveryDrivers/{id}": {
+      "get": {
+        "tags": [
+          "Delivery Drivers"
+        ],
+        "summary": "Obtener repartidor por ID",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del repartidor",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Repartidor encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryDriver"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "Repartidor no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Delivery Drivers"
+        ],
+        "summary": "Actualizar un repartidor existente",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del repartidor a actualizar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/deliveryDrivers_id_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Repartidor actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_30"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Delivery Drivers"
+        ],
+        "summary": "Eliminar un repartidor",
+        "description": "Roles permitidos: Admin",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del repartidor a eliminar",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "650c1f1f1f1f1f1f1f1f1f1f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Repartidor eliminado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_31"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "Repartidor no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/logout": {
+      "post": {
+        "tags": [
+          "Auth - Session"
+        ],
+        "summary": "Cerrar sesión de usuario",
+        "description": "Limpia la cookie 'authCookie'. Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT activa",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sesión cerrada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_32"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado (Cookie no provista o inválida)"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/wompi/token": {
+      "post": {
+        "tags": [
+          "Wompi Payments"
+        ],
+        "summary": "Generar token de autenticación de Wompi",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token generado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_33"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error al obtener el token de Wompi o error interno"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/wompi/paymentTest": {
+      "post": {
+        "tags": [
+          "Wompi Payments"
+        ],
+        "summary": "Procesar transacción de prueba (Tokenizada sin 3DS)",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/wompi_paymentTest_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Resultado de la transacción de prueba",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_34"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error en la transacción o error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/wompi/payment3DS": {
+      "post": {
+        "tags": [
+          "Wompi Payments"
+        ],
+        "summary": "Procesar transacción real con autenticación 3DS",
+        "description": "Roles permitidos: Customer, Admin, Employee",
+        "parameters": [
+          {
+            "name": "authCookie",
+            "in": "cookie",
+            "description": "Cookie de sesión JWT. Roles permitidos: Customer, Admin, Employee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/wompi_payment3DS_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Respuesta de inicio de transacción 3DS",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_35"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "500": {
+            "description": "Error en la transacción 3DS o error interno"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Product": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1f"
+          },
+          "name": {
+            "type": "string",
+            "example": "Camisa de Algodón"
+          },
+          "description": {
+            "type": "string",
+            "example": "Camisa talle M color azul"
+          },
+          "price": {
+            "type": "number",
+            "example": 25.99
+          },
+          "stock": {
+            "type": "integer",
+            "example": 10
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ProductInput": {
+        "required": [
+          "description",
+          "name",
+          "price",
+          "stock"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Camisa de Algodón"
+          },
+          "description": {
+            "type": "string",
+            "example": "Camisa talle M color azul"
+          },
+          "price": {
+            "type": "number",
+            "example": 25.99
+          },
+          "stock": {
+            "type": "integer",
+            "example": 10
+          }
+        }
+      },
+      "Branch": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1f"
+          },
+          "name": {
+            "type": "string",
+            "example": "Sucursal Central"
+          },
+          "address": {
+            "type": "string",
+            "example": "Av. Principal"
+          },
+          "schedule": {
+            "type": "string",
+            "example": "Lunes a Viernes de 8:00 AM a 5:00 PM"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "BranchInput": {
+        "required": [
+          "address",
+          "isActive",
+          "name",
+          "schedule"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Sucursal Central"
+          },
+          "address": {
+            "type": "string",
+            "example": "Av. Principal"
+          },
+          "schedule": {
+            "type": "string",
+            "example": "Lunes a Viernes de 8:00 AM a 5:00 PM"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "Review": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1f"
+          },
+          "idEmployee": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1a"
+          },
+          "idProducts": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1b"
+          },
+          "rating": {
+            "type": "number",
+            "example": 5
+          },
+          "comment": {
+            "type": "string",
+            "example": "Excelente servicio y atención."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ReviewInput": {
+        "required": [
+          "comment",
+          "idEmployee",
+          "idProducts",
+          "rating"
+        ],
+        "type": "object",
+        "properties": {
+          "idEmployee": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1a"
+          },
+          "idProducts": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1b"
+          },
+          "rating": {
+            "type": "number",
+            "example": 5
+          },
+          "comment": {
+            "type": "string",
+            "example": "Excelente servicio y atención."
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1f"
+          },
+          "name": {
+            "type": "string",
+            "example": "Juan"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Pérez"
+          },
+          "birthdate": {
+            "type": "string",
+            "format": "date",
+            "example": "1995-05-20"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "juan.perez@example.com"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": true
+          },
+          "loginAttemps": {
+            "type": "integer",
+            "example": 0
+          },
+          "timeOut": {
+            "type": "number",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CustomerInput": {
+        "required": [
+          "email",
+          "name",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Juan"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Pérez"
+          },
+          "birthdate": {
+            "type": "string",
+            "format": "date",
+            "example": "1995-05-20"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "juan.perez@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Password123!"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": true
+          },
+          "loginAttemps": {
+            "type": "integer",
+            "example": 0
+          },
+          "timeOut": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "Admin": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1f"
+          },
+          "name": {
+            "type": "string",
+            "example": "Carlos"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "admin.carlos@example.com"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": true
+          },
+          "loginAttemps": {
+            "type": "integer",
+            "example": 0
+          },
+          "timeOut": {
+            "type": "number",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AdminInput": {
+        "required": [
+          "email",
+          "name",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Carlos"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "admin.carlos@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "AdminPassword123!"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": true
+          },
+          "loginAttemps": {
+            "type": "integer",
+            "example": 0
+          },
+          "timeOut": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "Provider": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1f"
+          },
+          "name": {
+            "type": "string",
+            "example": "Distribuidora Central"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+50370000000"
+          },
+          "image": {
+            "type": "string",
+            "example": "https://res.cloudinary.com/demo/image/upload/v1234567890/providers/sample.jpg"
+          },
+          "public_id": {
+            "type": "string",
+            "example": "providers/sample"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CartItemInput": {
+        "required": [
+          "productId",
+          "quantity"
+        ],
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1b"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "CartItem": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "$ref": "#/components/schemas/CartItem_productId"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 2
+          },
+          "subtotal": {
+            "type": "number",
+            "example": 51.98
+          }
+        }
+      },
+      "Cart": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1f"
+          },
+          "customerId": {
+            "$ref": "#/components/schemas/Cart_customerId"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartItem"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 51.98
+          },
+          "status": {
+            "type": "string",
+            "example": "pending"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CartInput": {
+        "required": [
+          "customerId",
+          "products",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1a"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartItemInput"
+            }
+          },
+          "status": {
+            "type": "string",
+            "example": "pending"
+          }
+        }
+      },
+      "Employee": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1f"
+          },
+          "name": {
+            "type": "string",
+            "example": "Maria"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Gomez"
+          },
+          "salary": {
+            "type": "number",
+            "example": 600.5
+          },
+          "DUI": {
+            "type": "string",
+            "example": "01234567-8"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+50371234567"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "maria.gomez@example.com"
+          },
+          "idBranches": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f10"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": true
+          },
+          "loginAttemps": {
+            "type": "integer",
+            "example": 0
+          },
+          "timeOut": {
+            "type": "number",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "EmployeeInput": {
+        "required": [
+          "email",
+          "name",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Maria"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Gomez"
+          },
+          "salary": {
+            "type": "number",
+            "example": 600.5
+          },
+          "DUI": {
+            "type": "string",
+            "example": "01234567-8"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+50371234567"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "maria.gomez@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "EmployeePass123!"
+          },
+          "idBranches": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f10"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "DeliveryDriver": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1f"
+          },
+          "name": {
+            "type": "string",
+            "example": "Mario Bros"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+50375558888"
+          },
+          "cars": {
+            "type": "string",
+            "example": "Honda Civic 2020 - Placa P123-456"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "image": {
+            "type": "string",
+            "example": "https://res.cloudinary.com/demo/image/upload/v1234567890/drivers/sample.jpg"
+          },
+          "public_id": {
+            "type": "string",
+            "example": "drivers/sample"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "inline_response_200": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Product Saved"
+          }
+        }
+      },
+      "products_pricerange_body": {
+        "required": [
+          "max",
+          "min"
+        ],
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "number",
+            "example": 10
+          },
+          "max": {
+            "type": "number",
+            "example": 50
+          }
+        }
+      },
+      "products_searchname_body": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Camisa"
+          }
+        }
+      },
+      "inline_response_200_1": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Product Updated"
+          }
+        }
+      },
+      "inline_response_200_2": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Product Deleted"
+          }
+        }
+      },
+      "inline_response_200_3": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Branch saved"
+          }
+        }
+      },
+      "inline_response_200_4": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Branch updated"
+          }
+        }
+      },
+      "inline_response_200_5": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Branch Deleted"
+          }
+        }
+      },
+      "inline_response_200_6": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Review saved"
+          }
+        }
+      },
+      "inline_response_200_7": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Review updated"
+          }
+        }
+      },
+      "inline_response_200_8": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Review deleted"
+          }
+        }
+      },
+      "api_registerCustomer_body": {
+        "required": [
+          "birthdate",
+          "email",
+          "lastName",
+          "name",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Juan"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Pérez"
+          },
+          "birthdate": {
+            "type": "string",
+            "format": "date",
+            "example": "1995-05-20"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "juan.perez@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Password123!"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "inline_response_200_9": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Email sent"
+          }
+        }
+      },
+      "registerCustomer_verifyCodeEmail_body": {
+        "required": [
+          "verificationCodeRequest"
+        ],
+        "type": "object",
+        "properties": {
+          "verificationCodeRequest": {
+            "type": "string",
+            "example": "a1b2c3"
+          }
+        }
+      },
+      "inline_response_200_10": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer registered"
+          }
+        }
+      },
+      "api_loginCustomer_body": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "juan.perez@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Password123!"
+          }
+        }
+      },
+      "inline_response_200_11": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Login exitoso"
+          }
+        }
+      },
+      "recoveryPassword_requestCode_body": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "juan.perez@example.com"
+          }
+        }
+      },
+      "inline_response_200_12": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "email sent"
+          }
+        }
+      },
+      "recoveryPassword_verifyCode_body": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "a1b2c3"
+          }
+        }
+      },
+      "inline_response_200_13": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Code verified succesfully"
+          }
+        }
+      },
+      "recoveryPassword_newPassword_body": {
+        "required": [
+          "confirmNewPassword",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "newPassword": {
+            "type": "string",
+            "example": "NewPassword123!"
+          },
+          "confirmNewPassword": {
+            "type": "string",
+            "example": "NewPassword123!"
+          }
+        }
+      },
+      "inline_response_200_14": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Password Updated"
+          }
+        }
+      },
+      "inline_response_200_15": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer Updated"
+          }
+        }
+      },
+      "inline_response_200_16": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer Deleted"
+          }
+        }
+      },
+      "api_registerAdmin_body": {
+        "required": [
+          "email",
+          "name",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Carlos"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "admin.carlos@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "AdminPassword123!"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "registerAdmin_verifyCodeEmail_body": {
+        "required": [
+          "verificationCodeRequest"
+        ],
+        "type": "object",
+        "properties": {
+          "verificationCodeRequest": {
+            "type": "string",
+            "example": "a1b2c3"
+          }
+        }
+      },
+      "inline_response_200_17": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Admin registered"
+          }
+        }
+      },
+      "api_loginAdmin_body": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "admin.carlos@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "AdminPassword123!"
+          }
+        }
+      },
+      "inline_response_200_18": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Admin Updated"
+          }
+        }
+      },
+      "inline_response_200_19": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Admin Deleted"
+          }
+        }
+      },
+      "api_providers_body": {
+        "required": [
+          "image",
+          "name",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Distribuidora Central"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+50370000000"
+          },
+          "image": {
+            "type": "string",
+            "description": "Imagen del proveedor",
+            "format": "binary"
+          }
+        }
+      },
+      "inline_response_200_20": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Provider saved"
+          }
+        }
+      },
+      "providers_id_body": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Distribuidora Central"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+50370000000"
+          },
+          "image": {
+            "type": "string",
+            "description": "Nueva imagen del proveedor (opcional)",
+            "format": "binary"
+          }
+        }
+      },
+      "inline_response_200_21": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Provider updated"
+          }
+        }
+      },
+      "inline_response_200_22": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Provider deleted"
+          }
+        }
+      },
+      "inline_response_200_23": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Cart created"
+          }
+        }
+      },
+      "inline_response_200_24": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Cart updated"
+          }
+        }
+      },
+      "inline_response_200_25": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Cart deleted"
+          }
+        }
+      },
+      "api_registerEmployee_body": {
+        "required": [
+          "DUI",
+          "email",
+          "idBranches",
+          "lastName",
+          "name",
+          "password",
+          "phone",
+          "salary"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Maria"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Gomez"
+          },
+          "salary": {
+            "type": "number",
+            "example": 600.5
+          },
+          "DUI": {
+            "type": "string",
+            "example": "01234567-8"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+50371234567"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "maria.gomez@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "EmployeePass123!"
+          },
+          "idBranches": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f10"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "registerEmployee_verifyCodeEmail_body": {
+        "required": [
+          "verificationCodeRequest"
+        ],
+        "type": "object",
+        "properties": {
+          "verificationCodeRequest": {
+            "type": "string",
+            "example": "a1b2c3"
+          }
+        }
+      },
+      "inline_response_200_26": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Employee registered"
+          }
+        }
+      },
+      "api_loginEmployee_body": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "maria.gomez@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "EmployeePass123!"
+          }
+        }
+      },
+      "inline_response_200_27": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Employee Updated"
+          }
+        }
+      },
+      "inline_response_200_28": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Employee Deleted"
+          }
+        }
+      },
+      "api_deliveryDrivers_body": {
+        "required": [
+          "image",
+          "name",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Mario Bros"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+50375558888"
+          },
+          "cars": {
+            "type": "string",
+            "example": "Honda Civic 2020 - Placa P123-456"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "image": {
+            "type": "string",
+            "description": "Imagen del repartidor",
+            "format": "binary"
+          }
+        }
+      },
+      "inline_response_200_29": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Delivery Driver Saved"
+          }
+        }
+      },
+      "deliveryDrivers_id_body": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Mario Bros"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+50375558888"
+          },
+          "cars": {
+            "type": "string",
+            "example": "Honda Civic 2020 - Placa P123-456"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "image": {
+            "type": "string",
+            "description": "Nueva imagen del repartidor (opcional)",
+            "format": "binary"
+          }
+        }
+      },
+      "inline_response_200_30": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Driver updated"
+          }
+        }
+      },
+      "inline_response_200_31": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Driver deleted"
+          }
+        }
+      },
+      "inline_response_200_32": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Sesión cerrada"
+          }
+        }
+      },
+      "inline_response_200_33": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "example": "eyJhbGciOiJSUzI1NiIs..."
+          },
+          "expires_in": {
+            "type": "integer",
+            "example": 86400
+          },
+          "token_type": {
+            "type": "string",
+            "example": "Bearer"
+          },
+          "scope": {
+            "type": "string",
+            "example": "api"
+          }
+        }
+      },
+      "apiwompipaymentTest_formData": {
+        "type": "object",
+        "properties": {
+          "tarjetaToken": {
+            "type": "string",
+            "example": "tok_test_123456"
+          },
+          "monto": {
+            "type": "number",
+            "example": 25.5
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "cliente@example.com"
+          }
+        },
+        "description": "Datos de la compra para transacción tokenizada sin 3DS"
+      },
+      "wompi_paymentTest_body": {
+        "required": [
+          "formData",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token de autenticación de Wompi obtenido previamente",
+            "example": "eyJhbGciOiJSUzI1NiIs..."
+          },
+          "formData": {
+            "$ref": "#/components/schemas/apiwompipaymentTest_formData"
+          }
+        }
+      },
+      "inline_response_200_34": {
+        "type": "object",
+        "properties": {
+          "esExitosa": {
+            "type": "boolean",
+            "example": true
+          },
+          "idTransaccion": {
+            "type": "string",
+            "example": "TX-987654"
+          },
+          "codigoAutorizacion": {
+            "type": "string",
+            "example": "001234"
+          },
+          "mensaje": {
+            "type": "string",
+            "example": "Transacción Aprobada"
+          }
+        }
+      },
+      "apiwompipayment3DS_formData": {
+        "type": "object",
+        "properties": {
+          "tarjetaToken": {
+            "type": "string",
+            "example": "tok_live_987654"
+          },
+          "monto": {
+            "type": "number",
+            "example": 50
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "cliente@example.com"
+          },
+          "urlRedirect": {
+            "type": "string",
+            "example": "https://mi-tienda.com/checkout/complete"
+          }
+        },
+        "description": "Datos requeridos por Wompi para flujo 3D Secure"
+      },
+      "wompi_payment3DS_body": {
+        "required": [
+          "formData",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token de autenticación de Wompi",
+            "example": "eyJhbGciOiJSUzI1NiIs..."
+          },
+          "formData": {
+            "$ref": "#/components/schemas/apiwompipayment3DS_formData"
+          }
+        }
+      },
+      "inline_response_200_35": {
+        "type": "object",
+        "properties": {
+          "esExitosa": {
+            "type": "boolean",
+            "example": true
+          },
+          "idTransaccion": {
+            "type": "string",
+            "example": "TX-3DS-55512"
+          },
+          "urlAutenticacion3DS": {
+            "type": "string",
+            "example": "https://3ds.wompi.sv/verify?tx=TX-3DS-55512"
+          }
+        }
+      },
+      "CartItem_productId": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1b"
+          },
+          "name": {
+            "type": "string",
+            "example": "Camisa de Algodón"
+          },
+          "price": {
+            "type": "number",
+            "example": 25.99
+          }
+        }
+      },
+      "Cart_customerId": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "650c1f1f1f1f1f1f1f1f1f1a"
+          },
+          "name": {
+            "type": "string",
+            "example": "Juan"
+          },
+          "email": {
+            "type": "string",
+            "example": "juan.perez@example.com"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "description": "Cookie de sesión para autenticación y control de acceso basado en roles.",
+        "name": "authCookie",
+        "in": "cookie"
+      }
+    }
+  }
+}
